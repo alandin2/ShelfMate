@@ -1,0 +1,9 @@
+{
+  "short_name": "ShelfMate",
+  "name": "ShelfMate - Book Discovery App",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
