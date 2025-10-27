@@ -10,13 +10,19 @@ export default function HomePage() {
         <div
           className="flex flex-row items-start gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide"
           style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            gap: '1.0rem',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth'
-          }}
+          }}x
         >
           {SAMPLE_BOOKS.slice(0, 4).map(book => (
-            <BookCard key={book.id} book={book} />
+            <BookCard key={book.id} book={book}/>
           ))}
         </div>
       </div>
@@ -26,6 +32,12 @@ export default function HomePage() {
         <div
           className="flex flex-row items-start gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide"
           style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            gap: '0.75rem',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth'
@@ -42,10 +54,16 @@ export default function HomePage() {
         <div
           className="flex flex-row items-start gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide"
           style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            gap: '0.75rem',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth'
-          }}
+          }}S
         >
           {SAMPLE_BOOKS.slice(2, 6).map(book => (
             <BookCard key={book.id} book={book} />
