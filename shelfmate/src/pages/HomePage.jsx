@@ -19,10 +19,10 @@ export default function HomePage() {
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth'
-          }}
+          }}x
         >
           {SAMPLE_BOOKS.slice(0, 4).map(book => (
-            <BookCard key={book.id} book={book} />
+            <BookCard key={book.id} book={book}/>
           ))}
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function HomePage() {
             scrollSnapType: 'x mandatory',
             WebkitOverflowScrolling: 'touch',
             scrollBehavior: 'smooth'
-          }}
+          }}S
         >
           {SAMPLE_BOOKS.slice(2, 6).map(book => (
             <BookCard key={book.id} book={book} />
