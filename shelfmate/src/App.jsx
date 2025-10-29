@@ -22,9 +22,9 @@ export default function App() {
           <p>Favorites Page (Coming Soon)</p>
         </div>
       )}
-      {currentView === 'swipe' && (
+      {currentView === 'discover' && (
         <div className="flex-1 flex items-center justify-center">
-          <p>Swipe Page (Coming Soon)</p>
+          <p>Discover Page (Coming Soon)</p>
         </div>
       )}
       {currentView === 'profile' && (
