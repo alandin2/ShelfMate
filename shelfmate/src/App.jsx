@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
 import BottomNav from './components/BottomNav';
 
 export default function App() {
@@ -27,11 +28,7 @@ export default function App() {
           <p>Discover Page (Coming Soon)</p>
         </div>
       )}
-      {currentView === 'profile' && (
-        <div className="flex-1 flex items-center justify-center">
-          <p>Profile Page (Coming Soon)</p>
-        </div>
-      )}
+      {currentView === 'profile' && <ProfilePage />}
 
       {/* Bottom Navigation */}
       <BottomNav 
