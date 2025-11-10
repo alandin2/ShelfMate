@@ -25,7 +25,7 @@ export const SAMPLE_BOOKS = [
     published: 1877,
     language: "Russian",
     rating: 4.7,
-    amazonLink: "https://www.amazon.com/Anna-Karenina-Leo-Tolstoy/s?k=Anna+Karenina"
+    amazonLink: "https://www.amazon.com/s?k=Anna+Karenina+Leo+Tolstoy"
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ export const SAMPLE_BOOKS = [
     published: 1605,
     language: "Spanish",
     rating: 4.5,
-    amazonLink: "https://www.amazon.com/Don-Quixote-Miguel-Cervantes/s?k=Don+Quixote"
+    amazonLink: "https://www.amazon.com/s?k=Don+Quixote+Miguel+de+Cervantes"
   },
   {
     id: 3,
@@ -48,8 +48,8 @@ export const SAMPLE_BOOKS = [
     summary: "Interwoven lives in a provincial town explore love, ambition, and reform.",
     published: 1871,
     language: "English",
-    rating: 4.4,
-    amazonLink: "https://www.amazon.com/Middlemarch-George-Eliot/s?k=Middlemarch"
+    rating: 4.6,
+    amazonLink: "https://www.amazon.com/s?k=Middlemarch+George+Eliot"
   },
   {
     id: 4,
@@ -60,8 +60,8 @@ export const SAMPLE_BOOKS = [
     summary: "A Jazz Age tale of dreams, wealth, and longing on Long Island.",
     published: 1925,
     language: "English",
-    rating: 4.6,
-    amazonLink: "https://www.amazon.com/Great-Gatsby-F-Scott-Fitzgerald/s?k=The+Great+Gatsby"
+    rating: 4.8,
+    amazonLink: "https://www.amazon.com/s?k=The+Great+Gatsby+F+Scott+Fitzgerald"
   },
   {
     id: 5,
@@ -72,8 +72,8 @@ export const SAMPLE_BOOKS = [
     summary: "A witty romance of manners about love, class, and first impressions.",
     published: 1813,
     language: "English",
-    rating: 4.8,
-    amazonLink: "https://www.amazon.com/Pride-Prejudice-Jane-Austen/s?k=Pride+and+Prejudice"
+    rating: 4.9,
+    amazonLink: "https://www.amazon.com/s?k=Pride+and+Prejudice+Jane+Austen"
   },
   {
     id: 6,
@@ -85,7 +85,7 @@ export const SAMPLE_BOOKS = [
     published: 1949,
     language: "English",
     rating: 4.7,
-    amazonLink: "https://www.amazon.com/1984-George-Orwell/s?k=1984"
+    amazonLink: "https://www.amazon.com/s?k=1984+George+Orwell"
   },
   {
     id: 7,
@@ -97,7 +97,7 @@ export const SAMPLE_BOOKS = [
     published: 1960,
     language: "English",
     rating: 4.8,
-    amazonLink: "https://www.amazon.com/Kill-Mockingbird-Harper-Lee/s?k=To+Kill+a+Mockingbird"
+    amazonLink: "https://www.amazon.com/s?k=To+Kill+a+Mockingbird+Harper+Lee"
   },
   {
     id: 8,
@@ -109,7 +109,7 @@ export const SAMPLE_BOOKS = [
     published: 1937,
     language: "English",
     rating: 4.7,
-    amazonLink: "https://www.amazon.com/Hobbit-J-R-R-Tolkien/s?k=The+Hobbit"
+    amazonLink: "https://www.amazon.com/s?k=The+Hobbit+JRR+Tolkien"
   },
   {
     id: 9,
@@ -121,7 +121,7 @@ export const SAMPLE_BOOKS = [
     published: 1866,
     language: "Russian",
     rating: 4.6,
-    amazonLink: "https://www.amazon.com/Crime-Punishment-Fyodor-Dostoevsky/s?k=Crime+and+Punishment"
+    amazonLink: "https://www.amazon.com/s?k=Crime+and+Punishment+Fyodor+Dostoevsky"
   },
   {
     id: 10,
@@ -133,7 +133,7 @@ export const SAMPLE_BOOKS = [
     published: 1847,
     language: "English",
     rating: 4.5,
-    amazonLink: "https://www.amazon.com/Wuthering-Heights-Emily-Bronte/s?k=Wuthering+Heights"
+    amazonLink: "https://www.amazon.com/s?k=Wuthering+Heights+Emily+Bronte"
   },
   {
     id: 11,
@@ -145,7 +145,7 @@ export const SAMPLE_BOOKS = [
     published: 1951,
     language: "English",
     rating: 4.4,
-    amazonLink: "https://www.amazon.com/Catcher-Rye-J-D-Salinger/s?k=The+Catcher+in+the+Rye"
+    amazonLink: "https://www.amazon.com/s?k=The+Catcher+in+the+Rye+JD+Salinger"
   },
   {
     id: 12,
@@ -157,7 +157,7 @@ export const SAMPLE_BOOKS = [
     published: 1847,
     language: "English",
     rating: 4.7,
-    amazonLink: "https://www.amazon.com/Jane-Eyre-Charlotte-Bronte/s?k=Jane+Eyre"
+    amazonLink: "https://www.amazon.com/s?k=Jane+Eyre+Charlotte+Bronte"
   },
   {
     id: 13,
@@ -168,8 +168,8 @@ export const SAMPLE_BOOKS = [
     summary: "A provocative vision of pleasure, control, and conformity.",
     published: 1932,
     language: "English",
-    rating: 4.5,
-    amazonLink: "https://www.amazon.com/Brave-New-World-Aldous-Huxley/s?k=Brave+New+World"
+    rating: 4.6,
+    amazonLink: "https://www.amazon.com/s?k=Brave+New+World+Aldous+Huxley"
   },
   {
     id: 14,
@@ -180,140 +180,20 @@ export const SAMPLE_BOOKS = [
     summary: "An epic quest to destroy a dark power and save Middle-earth.",
     published: 1954,
     language: "English",
-    rating: 4.8,
-    amazonLink: "https://www.amazon.com/Lord-Rings-J-R-R-Tolkien/s?k=The+Lord+of+the+Rings"
+    rating: 4.9,
+    amazonLink: "https://www.amazon.com/s?k=The+Lord+of+the+Rings+JRR+Tolkien"
   },
   {
     id: 15,
-    title: "Harry Potter and the Philosopher's Stone",
+    title: "Harry Potter",
     author: "J.K. Rowling",
     genre: "Fantasy",
     cover: harryCover,
     summary: "A young wizard discovers friendship, courage, and destiny.",
     published: 1997,
     language: "English",
-    rating: 4.9,
-    amazonLink: "https://www.amazon.com/Harry-Potter-Philosophers-Stone-Rowling/s?k=Harry+Potter"
-  },
-  {
-    id: 16,
-    title: "War and Peace",
-    author: "Leo Tolstoy",
-    genre: "Classics",
-    cover: annaCover,
-    summary: "An epic tale of five families navigating love and war in Napoleonic Russia.",
-    published: 1869,
-    language: "Russian",
-    rating: 4.6,
-    amazonLink: "https://www.amazon.com/s?k=War+and+Peace+Leo+Tolstoy"
-  },
-  {
-    id: 17,
-    title: "Animal Farm",
-    author: "George Orwell",
-    genre: "Fiction",
-    cover: orwellCover,
-    summary: "A satirical allegory of totalitarianism and corrupted ideals.",
-    published: 1945,
-    language: "English",
-    rating: 4.5,
-    amazonLink: "https://www.amazon.com/s?k=Animal+Farm+George+Orwell"
-  },
-  {
-    id: 18,
-    title: "The Chronicles of Narnia",
-    author: "C.S. Lewis",
-    genre: "Fantasy",
-    cover: lordCover,
-    summary: "Magical adventures in a wondrous world beyond the wardrobe.",
-    published: 1950,
-    language: "English",
-    rating: 4.7,
-    amazonLink: "https://www.amazon.com/s?k=Chronicles+of+Narnia"
-  },
-  {
-    id: 19,
-    title: "Emma",
-    author: "Jane Austen",
-    genre: "Romance",
-    cover: prideCover,
-    summary: "A matchmaker learns valuable lessons about love and friendship.",
-    published: 1815,
-    language: "English",
-    rating: 4.4,
-    amazonLink: "https://www.amazon.com/s?k=Emma+Jane+Austen"
-  },
-  {
-    id: 20,
-    title: "The Brothers Karamazov",
-    author: "Fyodor Dostoevsky",
-    genre: "Classics",
-    cover: crimeCover,
-    summary: "A profound exploration of faith, doubt, and family dynamics.",
-    published: 1880,
-    language: "Russian",
-    rating: 4.7,
-    amazonLink: "https://www.amazon.com/s?k=Brothers+Karamazov"
-  },
-  {
-    id: 21,
-    title: "Sense and Sensibility",
-    author: "Jane Austen",
-    genre: "Romance",
-    cover: janeCover,
-    summary: "Two sisters navigate love, heartbreak, and societal expectations.",
-    published: 1811,
-    language: "English",
-    rating: 4.5,
-    amazonLink: "https://www.amazon.com/s?k=Sense+and+Sensibility"
-  },
-  {
-    id: 22,
-    title: "The Silmarillion",
-    author: "J.R.R. Tolkien",
-    genre: "Fantasy",
-    cover: hobbitCover,
-    summary: "The mythological foundation of Middle-earth and its ancient histories.",
-    published: 1977,
-    language: "English",
-    rating: 4.4,
-    amazonLink: "https://www.amazon.com/s?k=The+Silmarillion"
-  },
-  {
-    id: 23,
-    title: "Tender Is the Night",
-    author: "F. Scott Fitzgerald",
-    genre: "Classics",
-    cover: gatsbyCover,
-    summary: "A tragic romance set against the glamour of the French Riviera.",
-    published: 1934,
-    language: "English",
-    rating: 4.3,
-    amazonLink: "https://www.amazon.com/s?k=Tender+Is+the+Night"
-  },
-  {
-    id: 24,
-    title: "Franny and Zooey",
-    author: "J.D. Salinger",
-    genre: "Fiction",
-    cover: catcherRyeCover,
-    summary: "Two siblings grapple with spiritual crisis and family bonds.",
-    published: 1961,
-    language: "English",
-    rating: 4.2,
-    amazonLink: "https://www.amazon.com/s?k=Franny+and+Zooey"
-  },
-  {
-    id: 25,
-    title: "Island",
-    author: "Aldous Huxley",
-    genre: "Fiction",
-    cover: braveNewCover,
-    summary: "A utopian vision exploring enlightenment and human potential.",
-    published: 1962,
-    language: "English",
-    rating: 4.3,
-    amazonLink: "https://www.amazon.com/s?k=Island+Aldous+Huxley"
+    rating: 4.8,
+    amazonLink: "https://www.amazon.com/s?k=Harry+Potter+JK+Rowling"
   },
 ];
 
