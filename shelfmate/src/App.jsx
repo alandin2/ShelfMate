@@ -2,19 +2,39 @@ import { useState } from 'react';
 import BottomNav from './components/BottomNav';
 import HomePage from './pages/HomePage';
 import OnboardingPage from './pages/OnboardingPage';
+import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesPage from './pages/FavoritesPage';
 
 export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentView, setCurrentView] = useState('home');
 
+  const handleGetStarted = () => {
+    setShowOnboarding(false);
+    setShowLogin(true);
+  };
+
+  const handleLogin = () => {
+    setShowLogin(false);
+    setIsLoggedIn(true);
+  };
+
   const handleLogout = () => {
+    setIsLoggedIn(false);
     setShowOnboarding(true);
   };
 
+  // Show onboarding first
   if (showOnboarding) {
-    return <OnboardingPage onGetStarted={() => setShowOnboarding(false)} />;
+    return <OnboardingPage onGetStarted={handleGetStarted} />;
+  }
+
+  // Then show login
+  if (showLogin && !isLoggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
   }
 
   return (
