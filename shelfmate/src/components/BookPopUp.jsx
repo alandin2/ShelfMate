@@ -46,16 +46,15 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
           justifyContent: 'flex-start'
         }}
       >
-        {/* Close/Back button - changes based on view */}
+        {/* Left button - Back arrow (on summary) or Back to summary (on details) */}
         <button
           type="button"
-          onClick={detailsClicked ? handleBackToHome : handleBackToHome}
-          aria-label={detailsClicked ? "Close to home" : "Back to home"}
+          onClick={detailsClicked ? () => setDetailsClicked(false) : handleBackToHome}
+          aria-label={detailsClicked ? "Back to summary" : "Back to home"}
           style={{
             position: 'absolute',
             top: 8,
-            right: detailsClicked ? 8 : 'auto',
-            left: detailsClicked ? 'auto' : 8,
+            left: 8,
             width: 44,
             height: 44,
             borderRadius: 9999,
@@ -71,16 +70,41 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
             color: '#703923'
           }}
         >
-          {detailsClicked ? (
+          <svg style={{ width: 28, height: 28 }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        {/* Right button - Close (X) - only shows on details view */}
+        {detailsClicked && (
+          <button
+            type="button"
+            onClick={handleBackToHome}
+            aria-label="Close to home"
+            style={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              width: 44,
+              height: 44,
+              borderRadius: 9999,
+              border: '2px solid #e5e7eb',
+              background: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              boxSizing: 'border-box',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+              zIndex: 10,
+              color: '#703923'
+            }}
+          >
             <svg style={{ width: 24, height: 24 }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          ) : (
-            <svg style={{ width: 28, height: 28 }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          )}
-        </button>
+          </button>
+        )}
 
         {/* Book cover */}
         <div
