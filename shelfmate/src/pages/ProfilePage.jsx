@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GENRE_OPTIONS } from '../data/books';
+import { USER } from '../data/user';
 
 export default function ProfilePage() {
   const STORAGE_KEY = 'shelfmate_profile_v1';
 
   const defaultProfile = {
-    name: 'John Doe',
-    avatar: null, // data URL
-    genres: ['Fantasy', 'Mystery', 'Romance'],
+    name: USER.name,
+    username: USER.username,
+    avatar: USER.avatar, 
+    genres: USER.genres,
   };
 
 
@@ -118,6 +120,7 @@ export default function ProfilePage() {
               <div className="flex items-center space-x-3">
                 <div>
                   <h2 className="text-lg font-semibold">{profile.name}</h2>
+                  <p className="text-sm text-gray-600">@{profile.username}</p>
                 </div>
                 <button onClick={handleNameEdit} className="text-sm px-2 py-1 border rounded">Edit</button>
               </div>
