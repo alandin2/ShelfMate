@@ -9,6 +9,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: default;
+}
+
+* {
+  cursor: default;
+}
+
+input, textarea {
+  cursor: text !important;
+}
+
+button, a, [role="button"] {
+  cursor: pointer !important;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -18,4 +31,7 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
 }
