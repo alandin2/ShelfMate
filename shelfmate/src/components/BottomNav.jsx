@@ -59,7 +59,7 @@ export default function BottomNav({ currentView, onNavigate }) {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-black safe-bottom">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 safe-bottom" style={{ borderColor: '#703923' }}>
       <div className="mx-auto max-w-2xl bg-white">
         <div className="flex justify-around items-center h-[60px] px-4">
           {navItems.map((item) => {
@@ -71,11 +71,13 @@ export default function BottomNav({ currentView, onNavigate }) {
                 className={`flex flex-col items-center justify-center w-full p-1 min-h-[48px] transition-all duration-200 ease-in-out rounded-lg
                   touch-manipulation select-none
                   active:shadow-lg active:bg-gray-100 active:scale-95
-                  ${isActive ? 'text-black transform scale-105' : 'text-gray-400 hover:text-gray-600'}`}
+                  ${isActive ? 'transform scale-105' : 'text-gray-400 hover:text-gray-600'}`}
+                style={isActive ? { color: '#703923' } : {}}
               >
                 {item.icon(isActive)}
                 <span className={`text-xs mt-1 font-medium transition-colors duration-200
-                  ${isActive ? 'text-black' : 'text-gray-500'}`}>
+                  ${isActive ? '' : 'text-gray-500'}`}
+                  style={isActive ? { color: '#703923' } : {}}>
                   {item.label}
                 </span>
               </button>

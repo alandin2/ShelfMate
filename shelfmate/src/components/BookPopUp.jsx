@@ -1,5 +1,9 @@
+import { useState } from 'react';
+import BookDetailsView from './BookDetailsView';
 
-export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked = false }) {
+export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked = false, hideAddToFavorites = false }) {
+  const [detailsClicked, setDetailsClicked] = useState(false);
+
   const handleBackToHome = () => {
     onClose && onClose();
     window.dispatchEvent(new CustomEvent('navigate-home'));
@@ -26,34 +30,36 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
       <div
         role="dialog"
         aria-modal="true"
-        className="relative bg-white rounded-2xl p-4 w-80 max-w-[90vw] border-2 border-black"
+        className="relative bg-white rounded-2xl p-5 w-80 max-w-[90vw]"
         style={{
           borderRadius: 20,
-          border: '2px solid black',
-          padding: 16,
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+          padding: 20,
           background: 'white',
           width: '320px',
           maxWidth: '90vw',
-          height: '520px',
+          height: '620px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'flex-start'
         }}
       >
-        {/* Back button */}
+        {/* Close/Back button - changes based on view */}
         <button
           type="button"
-          onClick={handleBackToHome}
-          aria-label="Back to home"
+          onClick={detailsClicked ? handleBackToHome : handleBackToHome}
+          aria-label={detailsClicked ? "Close to home" : "Back to home"}
           style={{
             position: 'absolute',
             top: 8,
-            left: 8,
+            right: detailsClicked ? 8 : 'auto',
+            left: detailsClicked ? 'auto' : 8,
             width: 44,
             height: 44,
             borderRadius: 9999,
-            border: '2px solid black',
+            border: '2px solid #e5e7eb',
             background: 'white',
             display: 'flex',
             alignItems: 'center',
@@ -61,93 +67,95 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
             padding: 0,
             boxSizing: 'border-box',
             boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-            zIndex: 10
+            zIndex: 10,
+            color: '#703923'
           }}
         >
-          <svg style={{ width: 28, height: 28 }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          {detailsClicked ? (
+            <svg style={{ width: 24, height: 24 }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg style={{ width: 28, height: 28 }} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          )}
         </button>
 
         {/* Book cover */}
         <div
           className="mx-auto rounded-lg mb-4 overflow-hidden"
           style={{
-            width: '70%',
-            height: '60%',
-            minHeight: 220,
+            width: detailsClicked ? '80%' : '75%',
+            height: detailsClicked ? '52%' : '48%',
+            minHeight: detailsClicked ? 220 : 200,
             marginTop: 18,
+            borderRadius: 12,
+            boxSizing: 'border-box',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
+            transition: 'all 0.3s ease'
           }}
         >
           {typeof book.cover === 'string' ? (
             <img
               src={book.cover}
               alt={book.title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', backgroundColor: 'white' }}
             />
           ) : (
             <div style={{ width: '100%', height: '100%', backgroundColor: book.cover }} />
           )}
         </div>
 
-        {/* Footer with buttons */}
-        <div style={{ width: '100%', padding: '12px 8px', position: 'relative', boxSizing: 'border-box' }}>
-          <button
-            type="button"
-            onClick={onNotHeart}
-            aria-label="Not Heart"
-            style={{
-              position: 'absolute',
-              left: 12,
-              bottom: 8,
-              width: 56,
-              height: 56,
-              borderRadius: 9999,
-              border: '3px solid black',
-              background: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <svg style={{ width: 28, height: 28 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+        {/* Details section with summary and actions */}
+        <div style={{ width: '100%', padding: '12px 12px 16px', boxSizing: 'border-box' }}>
+          {detailsClicked ? (
+            <BookDetailsView 
+              book={book} 
+              onClose={() => setDetailsClicked(false)}
+              onAddToFavourites={onHeart}
+            />
+          ) : (
+            <>
+              <div style={{ textAlign: 'center', marginBottom: 10 }}>
+                <div className="text-base font-semibold" style={{ color: '#703923' }}>{book.title}</div>
+                <div className="text-sm text-gray-600">{book.author}</div>
+              </div>
 
-          <div style={{ textAlign: 'center', padding: '0 80px' }}>
-            <div className="text-base font-medium">{book.title}</div>
-            <div className="text-sm text-gray-600">{book.author}</div>
-          </div>
+              <p className="text-sm text-gray-700 text-center" style={{ lineHeight: 1.5, maxHeight: 110, overflow: 'auto' }}>
+                {book.summary || 'No summary available.'}
+              </p>
 
-          <button
-            type="button"
-            onClick={onHeart}
-            aria-label="Heart"
-            style={{
-              position: 'absolute',
-              right: 12,
-              bottom: 8,
-              width: 56,
-              height: 56,
-              borderRadius: 9999,
-              border: isLiked ? '3px solid #ef4444' : '3px solid black',
-              background: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            {isLiked ? (
-              <svg style={{ width: 28, height: 28 }} viewBox="0 0 24 24" fill="#ef4444">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6.02 4.02 4 6.5 4c1.74 0 3.41 1 4.13 2.44C11.09 5 12.76 4 14.5 4 16.98 4 19 6.02 19 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-            ) : (
-              <svg style={{ width: 28, height: 28 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.182l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-              </svg>
-            )}
-          </button>
+              <div className="mt-5 flex flex-col gap-3 w-full">
+                <button
+                  type="button"
+                  className="w-full py-3 rounded-full font-medium transition-all active:opacity-70"
+                  style={{ 
+                    border: '2px solid #703923',
+                    color: detailsClicked ? 'white' : '#703923', 
+                    backgroundColor: detailsClicked ? '#703923' : 'white'
+                  }}
+                  onClick={() => setDetailsClicked(!detailsClicked)}
+                >
+                  More Details
+                </button>
+
+                {!hideAddToFavorites && (
+                  <button
+                    type="button"
+                    className="w-full py-3 rounded-full font-semibold text-white flex items-center justify-center gap-2 transition-all active:scale-95 active:opacity-80"
+                    style={{ backgroundColor: '#703923' }}
+                    onClick={onHeart}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.182l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+                    </svg>
+                    Add to Favourites
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
