@@ -20,8 +20,8 @@ export default function LoginPage({ onLogin }) {
   };
 
   return (
-    <div className="h-screen bg-white flex flex-col max-w-md mx-auto">
-      <div className="flex-1 flex flex-col justify-center px-6">
+    <div className="min-h-screen bg-white flex flex-col max-w-md mx-auto">
+      <div className="flex-1 flex flex-col justify-center px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[#703923] mb-2">Welcome Back</h1>
           <p className="text-gray-600">Sign in to continue to ShelfMate</p>
@@ -63,9 +63,8 @@ export default function LoginPage({ onLogin }) {
           </div>
 
           <button
-            onClick={handleSubmit}
             type="submit"
-            className="w-full bg-[#703923] text-white py-3 px-5 rounded-lg text-base font-semibold hover:opacity-90 active:scale-95 transition-all mt-6"
+            className="w-full bg-[#703923] text-white py-3 px-5 rounded-lg text-base font-semibold hover:opacity-90 active:scale-95 transition-all mt-6 shadow-lg"
           >
             Sign In
           </button>
@@ -76,7 +75,7 @@ export default function LoginPage({ onLogin }) {
             </button>
           </div>
 
-          <div className="text-center mt-6">
+          <div className="text-center mt-6 pb-4">
             <p className="text-gray-600 text-sm">
               Don't have an account?{' '}
               <button type="button" className="text-[#703923] font-medium hover:underline">
