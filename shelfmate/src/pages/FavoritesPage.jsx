@@ -55,17 +55,20 @@ export default function FavoritesPage() {
         
         {favorites.length === 0 ? (
           <div className="text-center py-12">
-            <svg 
-              width="64" 
-              height="64" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="#703923" 
-              strokeWidth="1.5"
-              className="mx-auto mb-4"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.182l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-            </svg>
+            <div className="flex justify-center items-center mb-4">
+              <svg 
+                width="64" 
+                height="64" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="#703923" 
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+            </div>
             <p className="text-gray-600 text-lg">No favourites yet</p>
             <p className="text-gray-500 text-sm mt-2">Start adding books you love!</p>
           </div>

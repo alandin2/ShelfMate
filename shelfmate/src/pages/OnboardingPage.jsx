@@ -10,15 +10,16 @@ export default function OnboardingPage({ onGetStarted }) {
           src={onboardingImage} 
           alt="Onboarding" 
           className="w-full h-full object-cover"
+          style={{ userSelect: 'none', pointerEvents: 'none' }}
         />
       </div>
       
-      {/* Button Container - With whitespace below */}
-      <div className="flex-1 flex flex-col justify-center px-6 bg-white pb-32">
+      {/* Button Container */}
+      <div className="px-6 pb-8">
         <button
           onClick={onGetStarted}
           style={{ backgroundColor: '#703923' }}
-          className="w-full max-w-xs mx-auto text-white py-4 px-6 rounded-full text-lg font-semibold hover:opacity-90 active:scale-95 transition-all shadow-lg"
+          className="w-4/5 mx-auto block text-white py-3 px-5 rounded-3xl text-base font-semibold hover:opacity-90 active:bg-white active:text-[#703923] active:scale-95 transition-all"
         >
           Get Started
         </button>
