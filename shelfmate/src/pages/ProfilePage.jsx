@@ -99,15 +99,16 @@ export default function ProfilePage() {
         <div className="flex items-center space-x-4">
           <div className="relative">
             {profile.avatar ? (
-              <img src={profile.avatar} alt="avatar" className="w-20 h-20 rounded-full object-cover border-2 border-black" />
+              <img src={profile.avatar} alt="avatar" className="w-20 h-20 rounded-full object-cover border-2" style={{ borderColor: '#703923' }} />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-lg font-bold text-gray-700 border-2 border-black">
+              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-lg font-bold border-2" style={{ borderColor: '#703923', color: '#703923' }}>
                 {profile.name ? profile.name.split(' ').map(s => s[0]).slice(0,2).join('') : 'JD'}
               </div>
             )}
             <button
               onClick={triggerAvatarPick}
-              className="absolute -bottom-2 -right-2 bg-white border border-black rounded-full p-1 shadow-md"
+              className="absolute -bottom-2 -right-2 bg-white rounded-full p-1 shadow-md border"
+              style={{ borderColor: '#703923', color: '#703923' }}
               aria-label="Edit avatar"
             >
               ✎
@@ -122,13 +123,13 @@ export default function ProfilePage() {
                   <h2 className="text-lg font-semibold">{profile.name}</h2>
                   <p className="text-sm text-gray-600">@{profile.username}</p>
                 </div>
-                <button onClick={handleNameEdit} className="text-sm px-2 py-1 border rounded">Edit</button>
+                <button onClick={handleNameEdit} className="text-sm px-2 py-1 border rounded" style={{ borderColor: '#703923', color: '#703923' }}>Edit</button>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <input className="border p-1 rounded flex-1" value={nameDraft} onChange={(e)=>setNameDraft(e.target.value)} />
-                <button onClick={saveName} className="px-3 py-1 bg-black text-white rounded">Save</button>
-                <button onClick={()=>setEditingName(false)} className="px-2 py-1 border rounded">Cancel</button>
+                <input className="border p-1 rounded flex-1" style={{ borderColor: '#703923' }} value={nameDraft} onChange={(e)=>setNameDraft(e.target.value)} />
+                <button onClick={saveName} className="px-3 py-1 text-white rounded" style={{ backgroundColor: '#703923' }}>Save</button>
+                <button onClick={()=>setEditingName(false)} className="px-2 py-1 border rounded" style={{ borderColor: '#703923', color: '#703923' }}>Cancel</button>
               </div>
             )}
             {/* subtitle moved to sit under the name for clearer hierarchy */}
@@ -137,18 +138,18 @@ export default function ProfilePage() {
 
         {/* Subtitle under name + avatar, above the genres */}
         <div className="mt-4">
-          <p className="text-sm font-medium text-gray-700">Book Preferences</p>
+          <p className="text-sm font-bold" style={{ color: '#703923' }}>Book Preferences</p>
         </div>
 
         <div className="mt-2">
           <div className="flex flex-wrap gap-2 items-center">
             {profile.genres.map((g, i) => (
-              <div key={g + i} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border">
+              <div key={g + i} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border" style={{ borderColor: '#703923' }}>
                 {editingGenreIndex === i ? (
                   <div className="flex items-center space-x-2">
-                    <input className="border px-2 py-1 rounded" value={editingGenreValue} onChange={(e)=>setEditingGenreValue(e.target.value)} />
-                    <button onClick={()=>saveEditGenre(i)} className="px-2 py-1 bg-black text-white rounded">Save</button>
-                    <button onClick={()=>{setEditingGenreIndex(null); setEditingGenreValue('')}} className="px-2 py-1 border rounded">Cancel</button>
+                    <input className="border px-2 py-1 rounded" style={{ borderColor: '#703923' }} value={editingGenreValue} onChange={(e)=>setEditingGenreValue(e.target.value)} />
+                    <button onClick={()=>saveEditGenre(i)} className="px-2 py-1 text-white rounded" style={{ backgroundColor: '#703923' }}>Save</button>
+                    <button onClick={()=>{setEditingGenreIndex(null); setEditingGenreValue('')}} className="px-2 py-1 border rounded" style={{ borderColor: '#703923', color: '#703923' }}>Cancel</button>
                   </div>
                 ) : (
                   <>
@@ -162,7 +163,8 @@ export default function ProfilePage() {
             {/* Add button */}
             <button
               onClick={()=>{ setModalOpen(true); setModalSearch(''); }}
-              className="ml-1 w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-700"
+              className="ml-1 w-8 h-8 rounded-full border flex items-center justify-center"
+              style={{ borderColor: '#703923', color: '#703923' }}
               aria-label="Add genre"
             >
               +
@@ -183,10 +185,11 @@ export default function ProfilePage() {
                   value={modalSearch}
                   onChange={(e)=>setModalSearch(e.target.value)}
                   placeholder="Search"
-                  className="w-full border px-3 py-2 rounded"
+                  className="w-full border px-3 py-2 rounded-full focus:outline-none"
+                  style={{ borderColor: '#703923' }}
                 />
               </div>
-              <button onClick={()=>setModalOpen(false)} className="ml-2 px-3 py-2 border rounded">Close</button>
+              <button onClick={()=>setModalOpen(false)} className="ml-2 px-3 py-2 rounded-full text-white transition-all active:scale-95 active:opacity-80" style={{ backgroundColor: '#703923', cursor: 'pointer' }}>Close</button>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2 max-h-60 overflow-auto">
@@ -198,6 +201,7 @@ export default function ProfilePage() {
                     key={s}
                     onClick={()=>{ addGenre(s); }}
                     className="bg-gray-100 px-3 py-1 rounded-full border text-sm"
+                    style={{ borderColor: '#703923' }}
                   >
                     {s}
                   </button>

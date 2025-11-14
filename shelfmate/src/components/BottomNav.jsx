@@ -59,7 +59,7 @@ export default function BottomNav({ currentView, onNavigate }) {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 safe-bottom" style={{ borderColor: '#703923' }}>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 safe-bottom z-50" style={{ borderColor: '#703923' }}>
       <div className="mx-auto max-w-2xl bg-white">
         <div className="flex justify-around items-center h-[60px] px-4">
           {navItems.map((item) => {
