@@ -1,40 +1,77 @@
-import { useState, useEffect } from 'react';
-import BookCard from '../components/BookCard';
-import BookPopUp from '../components/BookPopUp';
+import { useState, useEffect } from "react";
+import BookCard from "../components/BookCard";
+import BookPopUp from "../components/BookPopUp";
+
+const FAVORITES_KEY = "shelfmate_favorites";
+const COLLECTIONS_KEY = "shelfmate_collections";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  // Load favorites from localStorage
+  // collections state
+  const [collections, setCollections] = useState([]);
+  const [openCollectionId, setOpenCollectionId] = useState(null);
+
+  // collection editor state
+  const [isCollectionEditorOpen, setIsCollectionEditorOpen] = useState(false);
+  const [collectionEditorName, setCollectionEditorName] = useState("");
+  const [collectionEditorSearchTerm, setCollectionEditorSearchTerm] =
+    useState("");
+  const [collectionEditorSelectedIds, setCollectionEditorSelectedIds] =
+    useState(new Set());
+
+  // load favorites n collections frm local storage
   useEffect(() => {
     const loadFavorites = () => {
       try {
-        const stored = localStorage.getItem('shelfmate_favorites');
+        const stored = localStorage.getItem(FAVORITES_KEY);
         if (stored) {
           setFavorites(JSON.parse(stored));
+        } else {
+          setFavorites([]);
         }
       } catch (e) {
-        console.error('Failed to load favorites:', e);
+        console.error("Failed to load favorites:", e);
       }
     };
 
-    loadFavorites();
-
-    // Listen for favorites updates
-    const handleStorageChange = () => {
-      loadFavorites();
+    const loadCollections = () => {
+      try {
+        const stored = localStorage.getItem(COLLECTIONS_KEY);
+        if (stored) {
+          setCollections(JSON.parse(stored));
+        } else {
+          setCollections([]);
+        }
+      } catch (e) {
+        console.error("Failed to load collections:", e);
+      }
     };
 
-    window.addEventListener('favorites-updated', handleStorageChange);
-    return () => window.removeEventListener('favorites-updated', handleStorageChange);
+    const handleDataChange = () => {
+      loadFavorites();
+      loadCollections();
+    };
+
+    loadFavorites();
+    loadCollections();
+
+    // listener for both favorites n collections updates
+    window.addEventListener("favorites-updated", handleDataChange);
+    window.addEventListener("collections-updated", handleDataChange);
+
+    return () => {
+      window.removeEventListener("favorites-updated", handleDataChange);
+      window.removeEventListener("collections-updated", handleDataChange);
+    };
   }, []);
 
   const handleBookClick = (book) => {
     setSelectedBook(book);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseBookPopup = () => {
     setSelectedBook(null);
   };
 
@@ -42,26 +79,124 @@ export default function FavoritesPage() {
     if (e) {
       e.stopPropagation();
     }
-    const updated = favorites.filter(book => book.id !== bookToRemove.id);
-    localStorage.setItem('shelfmate_favorites', JSON.stringify(updated));
+    const updated = favorites.filter((book) => book.id !== bookToRemove.id);
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(updated));
     setFavorites(updated);
-    window.dispatchEvent(new CustomEvent('favorites-updated'));
+    window.dispatchEvent(new CustomEvent("favorites-updated"));
+  };
+
+  // add the collection editor functionality
+
+  const openCollectionEditor = () => {
+    setIsCollectionEditorOpen(true);
+    setCollectionEditorName("");
+    setCollectionEditorSearchTerm("");
+    setCollectionEditorSelectedIds(new Set());
+  };
+
+  const closeCollectionEditor = () => {
+    setIsCollectionEditorOpen(false);
+    setCollectionEditorName("");
+    setCollectionEditorSearchTerm("");
+    setCollectionEditorSelectedIds(new Set());
+  };
+
+  const toggleCollectionEditorSelection = (bookId) => {
+    setCollectionEditorSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(bookId)) {
+        next.delete(bookId);
+      } else {
+        next.add(bookId);
+      }
+      return next;
+    });
+  };
+
+  const handleCreateCollection = () => {
+    if (!collectionEditorName.trim()) {
+      alert("Please enter a name for your collection.");
+      return;
+    }
+
+    if (collectionEditorSelectedIds.size === 0) {
+      alert("Please select at least one book.");
+      return;
+    }
+
+    const existingRaw = localStorage.getItem(COLLECTIONS_KEY);
+    const existing = existingRaw ? JSON.parse(existingRaw) : [];
+
+    const newCollection = {
+      id: Date.now(),
+      name: collectionEditorName.trim(),
+      bookIds: Array.from(collectionEditorSelectedIds),
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedCollections = [...existing, newCollection];
+    localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(updatedCollections));
+    setCollections(updatedCollections);
+
+    window.dispatchEvent(new CustomEvent("collections-updated"));
+
+    closeCollectionEditor();
+    alert("Collection created! 🎉");
+  };
+
+  const filteredFavoritesForEditor = favorites.filter((book) => {
+    if (!collectionEditorSearchTerm.trim()) return true;
+    const query = collectionEditorSearchTerm.toLowerCase();
+    return (
+      (book.title && book.title.toLowerCase().includes(query)) ||
+      (book.author && book.author.toLowerCase().includes(query))
+    );
+  });
+
+  // add the books into a collection frm favorites
+  const getBooksForCollection = (collection) => {
+    return favorites.filter((book) => collection.bookIds.includes(book.id));
+  };
+
+  const toggleCollectionOpen = (collectionId) => {
+    setOpenCollectionId((prev) =>
+      prev === collectionId ? null : collectionId
+    );
   };
 
   return (
     <div className="flex-1 overflow-y-auto pb-20">
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4" style={{ color: '#703923' }}>My Favourites</h1>
-        
+        {/* Header row: title + new collection button */}
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold" style={{ color: "#703923" }}>
+            My Favorites
+          </h1>
+
+          {favorites.length > 0 && (
+            <button
+              onClick={openCollectionEditor}
+              className="px-3 py-1 text-sm rounded-full border"
+              style={{
+                borderColor: "#703923",
+                color: "#703923",
+              }}
+            >
+              New Collection
+            </button>
+          )}
+        </div>
+
+        {/* favorites grid */}
         {favorites.length === 0 ? (
           <div className="text-center py-12">
             <div className="flex justify-center items-center mb-4">
-              <svg 
-                width="64" 
-                height="64" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="#703923" 
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#703923"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -69,8 +204,10 @@ export default function FavoritesPage() {
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </div>
-            <p className="text-gray-600 text-lg">No favourites yet</p>
-            <p className="text-gray-500 text-sm mt-2">Start adding books you love!</p>
+            <p className="text-gray-600 text-lg">No favorites yet</p>
+            <p className="text-gray-500 text-sm mt-2">
+              Start adding books you love!
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4">
@@ -80,17 +217,28 @@ export default function FavoritesPage() {
                 <button
                   onClick={(e) => handleRemoveFromFavorites(book, e)}
                   className="absolute top-1 right-1 z-10 bg-white rounded-full p-1 shadow-md"
-                  style={{ 
-                    border: '1.5px solid #703923',
-                    width: '28px',
-                    height: '28px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
+                  style={{
+                    border: "1.5px solid #703923",
+                    width: "28px",
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#703923" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#703923"
+                    strokeWidth="2.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
                 <BookCard book={book} onClick={handleBookClick} />
@@ -98,17 +246,200 @@ export default function FavoritesPage() {
             ))}
           </div>
         )}
+
+        {/* collections section */}
+        {collections.length > 0 && (
+          <div className="mt-8">
+            <h2
+              className="text-xl font-semibold mb-3"
+              style={{ color: "#703923" }}
+            >
+              My Collections
+            </h2>
+
+            <div className="space-y-3">
+              {collections.map((collection) => {
+                const booksInCollection = getBooksForCollection(collection);
+
+                return (
+                  <div
+                    key={collection.id}
+                    className="border rounded-lg px-3 py-2 bg-white"
+                    style={{ borderColor: "#e5e7eb" }}
+                  >
+                    <button
+                      onClick={() => toggleCollectionOpen(collection.id)}
+                      className="w-full flex items-center justify-between"
+                    >
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium text-sm">
+                          {collection.name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {booksInCollection.length} book
+                          {booksInCollection.length !== 1 && "s"}
+                        </span>
+                      </div>
+                      <span className="text-lg">
+                        {openCollectionId === collection.id ? "▴" : "▾"}
+                      </span>
+                    </button>
+
+                    {openCollectionId === collection.id && (
+                      <div className="mt-3">
+                        {booksInCollection.length === 0 ? (
+                          <p className="text-xs text-gray-500">
+                            No books currently in this collection. They may have
+                            been removed from favorites.
+                          </p>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-3">
+                            {booksInCollection.map((book) => (
+                              <div
+                                key={book.id}
+                                className="flex flex-col"
+                                onClick={() => handleBookClick(book)}
+                              >
+                                <BookCard book={book} />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* Book details popup */}
       {selectedBook && (
         <BookPopUp
           book={selectedBook}
-          onClose={handleCloseModal}
+          onClose={handleCloseBookPopup}
           onHeart={() => handleRemoveFromFavorites(selectedBook)}
-          onNotHeart={handleCloseModal}
+          onNotHeart={handleCloseBookPopup}
           isLiked={true}
           hideAddToFavorites={true}
         />
+      )}
+
+      {/* collection editor overlay */}
+      {isCollectionEditorOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between border-b px-4 py-3">
+              <h2
+                className="text-lg font-semibold"
+                style={{ color: "#703923" }}
+              >
+                New Collection
+              </h2>
+              <button
+                onClick={closeCollectionEditor}
+                className="p-1 rounded-full border text-sm"
+                style={{ borderColor: "#703923", color: "#703923" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="px-4 py-3 space-y-3 overflow-y-auto">
+              {/* collection name */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Collection name
+                </label>
+                <input
+                  type="text"
+                  value={collectionEditorName}
+                  onChange={(e) => setCollectionEditorName(e.target.value)}
+                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                  style={{ borderColor: "#703923" }}
+                  placeholder="e.g., Fall TBR, Romance Wishlist"
+                />
+              </div>
+
+              {/* Search frm favorites */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Add from favorites
+                </label>
+                <input
+                  type="text"
+                  value={collectionEditorSearchTerm}
+                  onChange={(e) =>
+                    setCollectionEditorSearchTerm(e.target.value)
+                  }
+                  className="w-full border rounded-md px-3 py-2 text-sm mb-2 focus:outline-none focus:ring-1"
+                  style={{ borderColor: "#703923" }}
+                  placeholder="Search your favorite books..."
+                />
+
+                <div className="border rounded-md max-h-52 overflow-y-auto">
+                  {filteredFavoritesForEditor.length === 0 ? (
+                    <p className="text-sm text-gray-500 p-3">
+                      No favorites match this search.
+                    </p>
+                  ) : (
+                    filteredFavoritesForEditor.map((book) => {
+                      const checked = collectionEditorSelectedIds.has(book.id);
+                      return (
+                        <button
+                          key={book.id}
+                          type="button"
+                          className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-50"
+                          onClick={() =>
+                            toggleCollectionEditorSelection(book.id)
+                          }
+                        >
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              readOnly
+                              checked={checked}
+                              className="h-4 w-4"
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium">
+                                {book.title}
+                              </span>
+                              {book.author && (
+                                <span className="text-xs text-gray-500">
+                                  {book.author}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer buttons */}
+            <div className="flex justify-end gap-2 border-t px-4 py-3">
+              <button
+                onClick={closeCollectionEditor}
+                className="px-3 py-2 text-sm rounded-md border"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateCollection}
+                className="px-3 py-2 text-sm rounded-md text-white"
+                style={{ backgroundColor: "#703923" }}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
