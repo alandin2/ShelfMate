@@ -5,6 +5,7 @@ import OnboardingPage from './pages/OnboardingPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesPage from './pages/FavoritesPage';
+import DiscoveryPage from './pages/DiscoveryPage';
 
 export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -56,11 +57,7 @@ export default function App() {
       {/* Main Content */}
       {currentView === 'home' && <HomePage />}
       {currentView === 'favorites' && <FavoritesPage />}
-      {currentView === 'discover' && (
-        <div className="flex-1 flex items-center justify-center">
-          <p>Discover Page (Coming Soon)</p>
-        </div>
-      )}
+      {currentView === 'discover' && <DiscoveryPage />}
       {currentView === 'profile' && <ProfilePage />}
 
       {/* Bottom Navigation */}
