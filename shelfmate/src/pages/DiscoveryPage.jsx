@@ -155,7 +155,7 @@ export default function DiscoveryPage() {
 
   if (!currentBook) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-4 pb-20">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 pb-20 max-w-2xl mx-auto w-full">
         <div className="text-center">
           <svg 
             width="64" 
@@ -183,13 +183,13 @@ export default function DiscoveryPage() {
 
   return (
     <div 
-      className="flex-1 flex flex-col items-center justify-between p-6 pb-24"
+      className="flex-1 flex flex-col items-center justify-between w-full max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6 pb-20 sm:pb-24"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
       {/* Book Card */}
-      <div className="flex-1 flex items-center justify-center w-full max-w-sm">
+      <div className="flex-1 flex items-center justify-center w-full max-w-[90vw] sm:max-w-md">
         <div
           ref={cardRef}
           className="relative w-full select-none"
@@ -207,22 +207,22 @@ export default function DiscoveryPage() {
           {isDragging && (
             <>
               <div
-                className="absolute top-8 left-8 text-green-500 text-2xl font-bold transform rotate-[-20deg] pointer-events-none"
+                className="absolute top-4 sm:top-8 left-4 sm:left-8 text-green-500 text-lg sm:text-2xl font-bold transform rotate-[-20deg] pointer-events-none"
                 style={{
                   opacity: dragOffset > 0 ? Math.min(dragOffset / 100, 1) : 0,
                   border: '3px solid currentColor',
-                  padding: '8px 16px',
+                  padding: '6px 12px',
                   borderRadius: '8px'
                 }}
               >
                 LIKE
               </div>
               <div
-                className="absolute top-8 right-8 text-red-500 text-2xl font-bold transform rotate-[20deg] pointer-events-none"
+                className="absolute top-4 sm:top-8 right-4 sm:right-8 text-red-500 text-lg sm:text-2xl font-bold transform rotate-[20deg] pointer-events-none"
                 style={{
                   opacity: dragOffset < 0 ? Math.min(Math.abs(dragOffset) / 100, 1) : 0,
                   border: '3px solid currentColor',
-                  padding: '8px 16px',
+                  padding: '6px 12px',
                   borderRadius: '8px'
                 }}
               >
@@ -233,10 +233,11 @@ export default function DiscoveryPage() {
 
           {/* Book Image */}
           <div 
-            className="bg-gray-200 rounded-lg shadow-lg overflow-hidden mb-4"
+            className="bg-gray-200 rounded-lg shadow-lg overflow-hidden mb-3 sm:mb-4"
             style={{ 
               aspectRatio: '2/3',
-              maxHeight: '65vh'
+              maxHeight: 'min(65vh, 600px)',
+              width: '100%'
             }}
           >
             <img
@@ -248,21 +249,21 @@ export default function DiscoveryPage() {
           </div>
 
           {/* Book Info */}
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold mb-1" style={{ color: '#703923' }}>
+          <div className="text-center mb-4 sm:mb-6 px-2">
+            <h2 className="text-xl sm:text-2xl font-bold mb-1 line-clamp-2" style={{ color: '#703923' }}>
               {currentBook.title}
             </h2>
-            <p className="text-lg text-gray-600">{currentBook.author}</p>
+            <p className="text-base sm:text-lg text-gray-600 line-clamp-1">{currentBook.author}</p>
           </div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-8 items-center justify-center pb-4">
+      <div className="flex gap-6 sm:gap-8 items-center justify-center pb-2 sm:pb-4 w-full">
         {/* Dislike Button */}
         <button
           onClick={handleDislike}
-          className="w-16 h-16 rounded-full border-3 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-3 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 flex-shrink-0"
           style={{
             border: '3px solid #703923',
             backgroundColor: activeButton === 'dislike' ? '#703923' : 'white',
@@ -270,8 +271,9 @@ export default function DiscoveryPage() {
           }}
         >
           <svg
-            width="32"
-            height="32"
+            width="28"
+            height="28"
+            className="sm:w-8 sm:h-8"
             viewBox="0 0 24 24"
             fill={activeButton === 'dislike' ? 'white' : 'none'}
             stroke={activeButton === 'dislike' ? 'white' : '#703923'}
@@ -287,7 +289,7 @@ export default function DiscoveryPage() {
         {/* Like Button */}
         <button
           onClick={handleLike}
-          className="w-16 h-16 rounded-full border-3 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-3 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 flex-shrink-0"
           style={{
             border: '3px solid #703923',
             backgroundColor: activeButton === 'like' ? '#703923' : 'white',
@@ -295,8 +297,9 @@ export default function DiscoveryPage() {
           }}
         >
           <svg
-            width="32"
-            height="32"
+            width="28"
+            height="28"
+            className="sm:w-8 sm:h-8"
             viewBox="0 0 24 24"
             fill={activeButton === 'like' ? 'white' : 'none'}
             stroke={activeButton === 'like' ? 'white' : '#703923'}
