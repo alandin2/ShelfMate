@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import BookCard from "../components/BookCard";
 import BookPopUp from "../components/BookPopUp";
 
@@ -57,7 +57,7 @@ export default function FavoritesPage() {
     loadFavorites();
     loadCollections();
 
-    // listener for both favorites n collections updates
+    // favorites n collections updates
     window.addEventListener("favorites-updated", handleDataChange);
     window.addEventListener("collections-updated", handleDataChange);
 
@@ -85,7 +85,7 @@ export default function FavoritesPage() {
     window.dispatchEvent(new CustomEvent("favorites-updated"));
   };
 
-  // add the collection editor functionality
+  // collection functions
 
   const openCollectionEditor = (preSelectedBookId = null) => {
     setIsCollectionEditorOpen(true);
@@ -292,15 +292,31 @@ export default function FavoritesPage() {
         )}
 
         {/* collections section */}
-        {collections.length > 0 && (
-          <div className="mt-8">
-            <h2
-              className="text-xl font-bold mb-3"
-              style={{ color: "#703923" }}
-            >
-              My Collections
-            </h2>
+        <div className="mt-8">
+          <h2
+            className="text-xl font-bold mb-3"
+            style={{ color: "#703923" }}
+          >
+            My Collections
+          </h2>
 
+          {collections.length === 0 ? (
+            <div className="border-2 rounded-xl px-4 py-8 bg-white text-center" style={{ borderColor: "#703923" }}>
+              <svg 
+                width="56" 
+                height="56" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="#703923" 
+                strokeWidth="2"
+                className="mx-auto mb-3 opacity-50"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <p className="text-base font-medium text-gray-700 mb-1">No collections yet</p>
+              <p className="text-sm text-gray-500">Organize your favorites into collections</p>
+            </div>
+          ) : (
             <div className="space-y-3">
               {collections.map((collection) => {
                 const booksInCollection = getBooksForCollection(collection);
@@ -408,8 +424,8 @@ export default function FavoritesPage() {
                 );
               })}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Book details popup */}
