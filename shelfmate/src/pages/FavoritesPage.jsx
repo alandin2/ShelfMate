@@ -116,19 +116,32 @@ export default function FavoritesPage() {
     setSelectedCollectionId("");
   };
 
-  const toggleCollectionEditorSelection = (bookId) => {
+  const toggleCollectionEditorSelection = (bookId, e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Ensure bookId is just a number, not an object or event
+    const id = typeof bookId === 'object' ? bookId.id : bookId;
+    
     setCollectionEditorSelectedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(bookId)) {
-        next.delete(bookId);
+      if (next.has(id)) {
+        next.delete(id);
       } else {
-        next.add(bookId);
+        next.add(id);
       }
       return next;
     });
   };
 
-  const handleCreateCollection = () => {
+  const handleCreateCollection = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     if (collectionMode === "existing") {
       // Add to existing collection
       if (!selectedCollectionId) {
@@ -620,8 +633,8 @@ export default function FavoritesPage() {
                           key={book.id}
                           type="button"
                           className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-50"
-                          onClick={() =>
-                            toggleCollectionEditorSelection(book.id)
+                          onClick={(e) =>
+                            toggleCollectionEditorSelection(book.id, e)
                           }
                         >
                           <div className="flex items-center gap-2">
@@ -660,7 +673,7 @@ export default function FavoritesPage() {
                 Cancel
               </button>
               <button
-                onClick={handleCreateCollection}
+                onClick={(e) => handleCreateCollection(e)}
                 className="px-3 py-2 text-sm rounded-md text-white"
                 style={{ backgroundColor: "#703923" }}
               >
