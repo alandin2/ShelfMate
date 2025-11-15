@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import BookDetailsView from './BookDetailsView';
 
-export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked = false, hideAddToFavorites = false }) {
+export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked = false, hideAddToFavorites = false, onAddToCollection }) {
   const [detailsClicked, setDetailsClicked] = useState(false);
 
   const handleBackToHome = () => {
@@ -46,7 +46,7 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
           justifyContent: 'flex-start'
         }}
       >
-        {/* Left button - Back arrow (on summary) or Back to summary (on details) */}
+        {/* Left button*/}
         <button
           type="button"
           onClick={detailsClicked ? () => setDetailsClicked(false) : handleBackToHome}
@@ -77,7 +77,7 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
           </svg>
         </button>
 
-        {/* Right button - Close (X) - only shows on details view */}
+        {/* Right button */}
         {detailsClicked && (
           <button
             type="button"
@@ -135,7 +135,7 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
           )}
         </div>
 
-        {/* Details section with summary and actions */}
+        {/* Details section */}
         <div style={{ width: '100%', padding: '12px 12px 16px', boxSizing: 'border-box' }}>
           {detailsClicked ? (
             <BookDetailsView 
@@ -168,6 +168,22 @@ export default function BookPopUp({ book, onClose, onHeart, onNotHeart, isLiked 
                 >
                   More Details
                 </button>
+
+                {onAddToCollection && (
+                  <button
+                    type="button"
+                    className="w-full py-3 rounded-full font-medium transition-all active:scale-95 active:opacity-80"
+                    style={{ 
+                      border: '2px solid #703923',
+                      color: '#703923',
+                      backgroundColor: 'white',
+                      cursor: 'pointer'
+                    }}
+                    onClick={onAddToCollection}
+                  >
+                    Add to Collection
+                  </button>
+                )}
 
                 {!hideAddToFavorites && (
                   <button
