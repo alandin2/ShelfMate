@@ -87,11 +87,18 @@ export default function FavoritesPage() {
 
   // add the collection editor functionality
 
-  const openCollectionEditor = () => {
+  const openCollectionEditor = (preSelectedBookId = null) => {
     setIsCollectionEditorOpen(true);
     setCollectionEditorName("");
     setCollectionEditorSearchTerm("");
-    setCollectionEditorSelectedIds(new Set());
+    setCollectionEditorSelectedIds(preSelectedBookId ? new Set([preSelectedBookId]) : new Set());
+  };
+
+  const handleAddToCollection = () => {
+    if (selectedBook) {
+      setSelectedBook(null);
+      openCollectionEditor(selectedBook.id);
+    }
   };
 
   const closeCollectionEditor = () => {
@@ -144,6 +151,45 @@ export default function FavoritesPage() {
     alert("Collection created! 🎉");
   };
 
+  const handleDeleteCollection = (collectionId, e) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    
+    if (window.confirm("Are you sure you want to delete this collection?")) {
+      const updatedCollections = collections.filter(
+        (collection) => collection.id !== collectionId
+      );
+      localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(updatedCollections));
+      setCollections(updatedCollections);
+      window.dispatchEvent(new CustomEvent("collections-updated"));
+      
+      if (openCollectionId === collectionId) {
+        setOpenCollectionId(null);
+      }
+    }
+  };
+
+  const handleRemoveBookFromCollection = (collectionId, bookId, e) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    
+    const updatedCollections = collections.map((collection) => {
+      if (collection.id === collectionId) {
+        return {
+          ...collection,
+          bookIds: collection.bookIds.filter((id) => id !== bookId)
+        };
+      }
+      return collection;
+    });
+    
+    localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(updatedCollections));
+    setCollections(updatedCollections);
+    window.dispatchEvent(new CustomEvent("collections-updated"));
+  };
+
   const filteredFavoritesForEditor = favorites.filter((book) => {
     if (!collectionEditorSearchTerm.trim()) return true;
     const query = collectionEditorSearchTerm.toLowerCase();
@@ -173,18 +219,16 @@ export default function FavoritesPage() {
             My Favorites
           </h1>
 
-          {favorites.length > 0 && (
-            <button
-              onClick={openCollectionEditor}
-              className="px-3 py-1 text-sm rounded-full border"
-              style={{
-                borderColor: "#703923",
-                color: "#703923",
-              }}
-            >
-              New Collection
-            </button>
-          )}
+          <button
+            onClick={openCollectionEditor}
+            className="px-3 py-1 text-sm rounded-full border"
+            style={{
+              borderColor: "#703923",
+              color: "#703923",
+            }}
+          >
+            New Collection
+          </button>
         </div>
 
         {/* favorites grid */}
@@ -213,7 +257,7 @@ export default function FavoritesPage() {
           <div className="grid grid-cols-2 gap-4">
             {favorites.map((book) => (
               <div key={book.id} className="relative flex flex-col">
-                {/* Remove button */}
+                {/* button to remove from favorites */}
                 <button
                   onClick={(e) => handleRemoveFromFavorites(book, e)}
                   className="absolute top-1 right-1 z-10 bg-white rounded-full p-1 shadow-md"
@@ -251,7 +295,7 @@ export default function FavoritesPage() {
         {collections.length > 0 && (
           <div className="mt-8">
             <h2
-              className="text-xl font-semibold mb-3"
+              className="text-xl font-bold mb-3"
               style={{ color: "#703923" }}
             >
               My Collections
@@ -267,23 +311,46 @@ export default function FavoritesPage() {
                     className="border rounded-lg px-3 py-2 bg-white"
                     style={{ borderColor: "#e5e7eb" }}
                   >
-                    <button
-                      onClick={() => toggleCollectionOpen(collection.id)}
-                      className="w-full flex items-center justify-between"
-                    >
-                      <div className="flex flex-col items-start">
-                        <span className="font-medium text-sm">
-                          {collection.name}
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => toggleCollectionOpen(collection.id)}
+                        className="flex-1 flex items-center justify-between"
+                      >
+                        <div className="flex flex-col items-start">
+                          <span className="font-medium text-sm">
+                            {collection.name}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {booksInCollection.length} book
+                            {booksInCollection.length !== 1 && "s"}
+                          </span>
+                        </div>
+                        <span className="text-lg">
+                          {openCollectionId === collection.id ? "▴" : "▾"}
                         </span>
-                        <span className="text-xs text-gray-500">
-                          {booksInCollection.length} book
-                          {booksInCollection.length !== 1 && "s"}
-                        </span>
-                      </div>
-                      <span className="text-lg">
-                        {openCollectionId === collection.id ? "▴" : "▾"}
-                      </span>
-                    </button>
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteCollection(collection.id, e)}
+                        className="ml-2 p-1 rounded-full transition-all active:scale-90 active:opacity-70"
+                        style={{
+                          backgroundColor: "#703923",
+                          color: "white",
+                          cursor: "pointer",
+                          width: "28px",
+                          height: "28px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          border: "none",
+                          flexShrink: 0
+                        }}
+                        aria-label="Delete collection"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
 
                     {openCollectionId === collection.id && (
                       <div className="mt-3">
@@ -297,10 +364,40 @@ export default function FavoritesPage() {
                             {booksInCollection.map((book) => (
                               <div
                                 key={book.id}
-                                className="flex flex-col"
-                                onClick={() => handleBookClick(book)}
+                                className="relative flex flex-col"
                               >
-                                <BookCard book={book} />
+                                <button
+                                  onClick={(e) => handleRemoveBookFromCollection(collection.id, book.id, e)}
+                                  className="absolute top-1 right-1 z-10 bg-white rounded-full p-1 shadow-md transition-all active:scale-90 active:opacity-70"
+                                  style={{
+                                    border: "1.5px solid #703923",
+                                    width: "28px",
+                                    height: "28px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    cursor: "pointer"
+                                  }}
+                                  aria-label="Remove from collection"
+                                >
+                                  <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="#703923"
+                                    strokeWidth="2.5"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M6 18L18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </button>
+                                <div>
+                                  <BookCard book={book} />
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -324,10 +421,10 @@ export default function FavoritesPage() {
           onNotHeart={handleCloseBookPopup}
           isLiked={true}
           hideAddToFavorites={true}
+          onAddToCollection={handleAddToCollection}
         />
       )}
 
-      {/* collection editor overlay */}
       {isCollectionEditorOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 max-h-[80vh] flex flex-col">
@@ -340,10 +437,23 @@ export default function FavoritesPage() {
               </h2>
               <button
                 onClick={closeCollectionEditor}
-                className="p-1 rounded-full border text-sm"
-                style={{ borderColor: "#703923", color: "#703923" }}
+                className="p-2 rounded-full transition-all active:scale-90 active:opacity-70"
+                style={{ 
+                  backgroundColor: "#703923",
+                  color: "white",
+                  cursor: "pointer",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "none"
+                }}
+                aria-label="Close"
               >
-                ✕
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
