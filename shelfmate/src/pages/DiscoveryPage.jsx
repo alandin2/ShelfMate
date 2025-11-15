@@ -233,17 +233,17 @@ export default function DiscoveryPage() {
 
           {/* Book Image */}
           <div 
-            className="bg-gray-200 rounded-lg shadow-lg overflow-hidden mb-3 sm:mb-4"
+            className="bg-gray-200 rounded-lg shadow-lg overflow-hidden mb-3"
             style={{ 
               aspectRatio: '2/3',
-              maxHeight: 'min(65vh, 600px)',
+              maxHeight: 'min(50vh, 450px)',
               width: '100%'
             }}
           >
             <img
               src={currentBook.cover}
               alt={currentBook.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               draggable="false"
             />
           </div>

@@ -20,6 +20,8 @@ export default function FavoritesPage() {
     useState("");
   const [collectionEditorSelectedIds, setCollectionEditorSelectedIds] =
     useState(new Set());
+  const [collectionMode, setCollectionMode] = useState("new"); // "new" or "existing"
+  const [selectedCollectionId, setSelectedCollectionId] = useState("");
 
   // load favorites n collections frm local storage
   useEffect(() => {
@@ -91,13 +93,17 @@ export default function FavoritesPage() {
     setIsCollectionEditorOpen(true);
     setCollectionEditorName("");
     setCollectionEditorSearchTerm("");
-    setCollectionEditorSelectedIds(preSelectedBookId ? new Set([preSelectedBookId]) : new Set());
+    const initialSelection = preSelectedBookId ? new Set([preSelectedBookId]) : new Set();
+    setCollectionEditorSelectedIds(initialSelection);
+    setCollectionMode("new");
+    setSelectedCollectionId("");
   };
 
   const handleAddToCollection = () => {
-    if (selectedBook) {
+    if (selectedBook && selectedBook.id) {
+      const bookId = selectedBook.id; // Extract just the ID
       setSelectedBook(null);
-      openCollectionEditor(selectedBook.id);
+      openCollectionEditor(bookId);
     }
   };
 
@@ -106,9 +112,16 @@ export default function FavoritesPage() {
     setCollectionEditorName("");
     setCollectionEditorSearchTerm("");
     setCollectionEditorSelectedIds(new Set());
+    setCollectionMode("new");
+    setSelectedCollectionId("");
   };
 
-  const toggleCollectionEditorSelection = (bookId) => {
+  const toggleCollectionEditorSelection = (bookId, e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     // Safety check: ensure bookId is a number, not an event or object
     const id = typeof bookId === 'number' ? bookId : (bookId?.id || null);
     if (id === null || typeof id !== 'number') {
@@ -127,7 +140,50 @@ export default function FavoritesPage() {
     });
   };
 
-  const handleCreateCollection = () => {
+  const handleCreateCollection = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (collectionMode === "existing") {
+      // Add to existing collection
+      if (!selectedCollectionId) {
+        alert("Please select a collection.");
+        return;
+      }
+
+      if (collectionEditorSelectedIds.size === 0) {
+        alert("Please select at least one book.");
+        return;
+      }
+
+      const existingRaw = localStorage.getItem(COLLECTIONS_KEY);
+      const existing = existingRaw ? JSON.parse(existingRaw) : [];
+
+      const bookIdsToAdd = Array.from(collectionEditorSelectedIds);
+      
+      const updatedCollections = existing.map((collection) => {
+        if (collection.id === parseInt(selectedCollectionId, 10)) {
+          // Merge new book IDs with existing ones (avoid duplicates)
+          const mergedBookIds = Array.from(
+            new Set([...collection.bookIds, ...bookIdsToAdd])
+          );
+          return { ...collection, bookIds: mergedBookIds };
+        }
+        return collection;
+      });
+
+      localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(updatedCollections));
+      setCollections(updatedCollections);
+      window.dispatchEvent(new CustomEvent("collections-updated"));
+
+      closeCollectionEditor();
+      alert("Books added to collection! 🎉");
+      return;
+    }
+
+    // Create new collection
     if (!collectionEditorName.trim()) {
       alert("Please enter a name for your collection.");
       return;
@@ -228,7 +284,7 @@ export default function FavoritesPage() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto pb-20">
+    <div className="flex-1 overflow-y-auto pb-20" style={{ WebkitOverflowScrolling: 'touch', overflowY: 'scroll' }}>
       <div className="p-4">
         {/* Header row: title + new collection button */}
         <div className="flex items-center justify-between mb-4">
@@ -491,20 +547,74 @@ export default function FavoritesPage() {
             </div>
 
             <div className="px-4 py-3 space-y-3 overflow-y-auto">
-              {/* collection name */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Collection name
-                </label>
-                <input
-                  type="text"
-                  value={collectionEditorName}
-                  onChange={(e) => setCollectionEditorName(e.target.value)}
-                  className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1"
-                  style={{ borderColor: "#703923" }}
-                  placeholder="e.g., Fall TBR, Romance Wishlist"
-                />
-              </div>
+              {/* Mode selector */}
+              {collections.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Choose action</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setCollectionMode("new")}
+                      className="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                      style={{
+                        backgroundColor: collectionMode === "new" ? "#703923" : "white",
+                        color: collectionMode === "new" ? "white" : "#703923",
+                        border: "2px solid #703923"
+                      }}
+                    >
+                      Create New
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCollectionMode("existing")}
+                      className="flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                      style={{
+                        backgroundColor: collectionMode === "existing" ? "#703923" : "white",
+                        color: collectionMode === "existing" ? "white" : "#703923",
+                        border: "2px solid #703923"
+                      }}
+                    >
+                      Add to Existing
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* collection name or selector */}
+              {collectionMode === "new" ? (
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Collection name
+                  </label>
+                  <input
+                    type="text"
+                    value={collectionEditorName}
+                    onChange={(e) => setCollectionEditorName(e.target.value)}
+                    className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                    style={{ borderColor: "#703923" }}
+                    placeholder="e.g., Fall TBR, Romance Wishlist"
+                  />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Select collection
+                  </label>
+                  <select
+                    value={selectedCollectionId}
+                    onChange={(e) => setSelectedCollectionId(e.target.value)}
+                    className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1"
+                    style={{ borderColor: "#703923" }}
+                  >
+                    <option value="">Choose a collection...</option>
+                    {collections.map((collection) => (
+                      <option key={collection.id} value={collection.id}>
+                        {collection.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Search frm favorites */}
               <div>
@@ -535,8 +645,8 @@ export default function FavoritesPage() {
                           key={book.id}
                           type="button"
                           className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-50"
-                          onClick={() =>
-                            toggleCollectionEditorSelection(book.id)
+                          onClick={(e) =>
+                            toggleCollectionEditorSelection(book.id, e)
                           }
                         >
                           <div className="flex items-center gap-2">
@@ -570,15 +680,16 @@ export default function FavoritesPage() {
               <button
                 onClick={closeCollectionEditor}
                 className="px-3 py-2 text-sm rounded-md border"
+                style={{ borderColor: "#703923", color: "#703923" }}
               >
                 Cancel
               </button>
               <button
-                onClick={handleCreateCollection}
+                onClick={(e) => handleCreateCollection(e)}
                 className="px-3 py-2 text-sm rounded-md text-white"
                 style={{ backgroundColor: "#703923" }}
               >
-                Create
+                {collectionMode === "new" ? "Create" : "Add to Collection"}
               </button>
             </div>
           </div>

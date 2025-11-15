@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GENRE_OPTIONS } from '../data/books';
 import { USER } from '../data/user';
 
@@ -24,9 +24,6 @@ export default function ProfilePage() {
   const [readingGoal, setReadingGoal] = useState(20);
   const [editingGoal, setEditingGoal] = useState(false);
   const [goalDraft, setGoalDraft] = useState('20');
-  const [collections, setCollections] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-  const [openCollectionId, setOpenCollectionId] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -43,33 +40,6 @@ export default function ProfilePage() {
     } catch (e) {
       // ignore
     }
-
-    const loadData = () => {
-      try {
-        const collectionsRaw = localStorage.getItem('shelfmate_collections');
-        if (collectionsRaw) setCollections(JSON.parse(collectionsRaw));
-      } catch (e) {
-        // ignore
-      }
-
-      try {
-        const favoritesRaw = localStorage.getItem('shelfmate_favorites');
-        if (favoritesRaw) setFavorites(JSON.parse(favoritesRaw));
-      } catch (e) {
-        // ignore
-      }
-    };
-
-    loadData();
-
-    const handleDataChange = () => loadData();
-    window.addEventListener('collections-updated', handleDataChange);
-    window.addEventListener('favorites-updated', handleDataChange);
-
-    return () => {
-      window.removeEventListener('collections-updated', handleDataChange);
-      window.removeEventListener('favorites-updated', handleDataChange);
-    };
   }, []);
 
   useEffect(() => {
@@ -179,35 +149,8 @@ export default function ProfilePage() {
     setEditingGoal(false);
   };
 
-  const getBooksForCollection = (collection) => {
-    return favorites.filter((book) => collection.bookIds.includes(book.id));
-  };
-
-  const toggleCollectionOpen = (collectionId) => {
-    setOpenCollectionId((prev) => prev === collectionId ? null : collectionId);
-  };
-
-  const handleDeleteCollection = (collectionId, e) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    
-    if (window.confirm('Are you sure you want to delete this collection?')) {
-      const updatedCollections = collections.filter(
-        (collection) => collection.id !== collectionId
-      );
-      localStorage.setItem('shelfmate_collections', JSON.stringify(updatedCollections));
-      setCollections(updatedCollections);
-      window.dispatchEvent(new CustomEvent('collections-updated'));
-      
-      if (openCollectionId === collectionId) {
-        setOpenCollectionId(null);
-      }
-    }
-  };
-
   return (
-    <div className="flex-1 overflow-auto p-4 pb-20">
+    <div className="flex-1 overflow-y-auto p-4 pb-20" style={{ WebkitOverflowScrolling: 'touch', overflowY: 'scroll' }}>
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center space-x-4">
           <div className="relative">
@@ -377,113 +320,9 @@ export default function ProfilePage() {
             </div>
           )}
         </div>
-
-        {/* My Collections Section */}
-        <div className="mt-6">
-          <h3 className="text-sm font-bold mb-3" style={{ color: '#703923' }}>My Collections</h3>
-          {collections.length === 0 ? (
-            <div className="border-2 rounded-xl px-4 py-6 bg-white text-center" style={{ borderColor: '#703923' }}>
-              <svg 
-                width="48" 
-                height="48" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="#703923" 
-                strokeWidth="2"
-                className="mx-auto mb-2 opacity-50"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-              <p className="text-sm text-gray-600">No collections yet</p>
-              <p className="text-xs text-gray-500 mt-1">Create collections from your favorites</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {collections.map((collection) => {
-                const booksInCollection = getBooksForCollection(collection);
-
-                return (
-                  <div
-                    key={collection.id}
-                    className="border-2 rounded-xl px-3 py-2 bg-white"
-                    style={{ borderColor: '#703923' }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => toggleCollectionOpen(collection.id)}
-                        className="flex-1 flex items-center justify-between"
-                      >
-                        <div className="flex flex-col items-start">
-                          <span className="font-medium text-sm" style={{ color: '#703923' }}>
-                            {collection.name}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {booksInCollection.length} book{booksInCollection.length !== 1 && 's'}
-                          </span>
-                        </div>
-                        <span className="text-lg" style={{ color: '#703923' }}>
-                          {openCollectionId === collection.id ? '▴' : '▾'}
-                        </span>
-                      </button>
-                      <button
-                        onClick={(e) => handleDeleteCollection(collection.id, e)}
-                        className="ml-2 p-1 rounded-full transition-all active:scale-90 active:opacity-70"
-                        style={{
-                          backgroundColor: '#703923',
-                          color: 'white',
-                          cursor: 'pointer',
-                          width: '28px',
-                          height: '28px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          border: 'none',
-                          flexShrink: 0
-                        }}
-                        aria-label="Delete collection"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {openCollectionId === collection.id && (
-                      <div className="mt-3">
-                        {booksInCollection.length === 0 ? (
-                          <p className="text-xs text-gray-500">
-                            No books currently in this collection.
-                          </p>
-                        ) : (
-                          <div className="grid grid-cols-3 gap-2">
-                            {booksInCollection.map((book) => (
-                              <div key={book.id} className="flex flex-col">
-                                <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-sm">
-                                  {typeof book.cover === 'string' ? (
-                                    <img
-                                      src={book.cover}
-                                      alt={book.title}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  ) : (
-                                    <div className="w-full h-full" style={{ backgroundColor: book.cover }} />
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Modal: genre picker/search */}
+      {/* genre options */}
       {modalOpen && (
         <div className="fixed inset-0 z-40 flex items-end md:items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-30" onClick={()=>setModalOpen(false)} />
