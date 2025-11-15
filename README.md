@@ -9,6 +9,8 @@ ShelfMate is a dating app for books, swipe left on books you like and right for 
 - Node.js (find steps to download [here](https://nodejs.org/en/download))
 
 ### Steps:
+- Download ZIP of project
+- Navigate to Shelfmate/shelfmate in your console
 - Run 'npm start' in your console to start the application
 - The app will be accessible via https://localhost:3000 (Mobile preferred)
 > [!NOTE]
