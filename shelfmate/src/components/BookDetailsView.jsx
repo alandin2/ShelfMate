@@ -1,33 +1,39 @@
 export default function BookDetailsView({ book, onClose, onAddToFavourites }) {
   const handleShareCopy = async () => {
     const bookUrl = book.amazonLink;
-    
-    // Check if Web Share API is available (mobile devices)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: book.title,
-          text: `Check out "${book.title}" by ${book.author}`,
-          url: bookUrl
-        });
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          // If share fails, copy to clipboard
-          copyToClipboard(bookUrl);
-        }
-      }
-    } else {
-      // Fallback: Copy to clipboard
-      copyToClipboard(bookUrl);
-    }
+    // Always copy to clipboard
+    copyToClipboard(bookUrl);
   };
 
   const copyToClipboard = async (text) => {
     try {
+      // Try modern clipboard API first
       await navigator.clipboard.writeText(text);
       alert('Link copied to clipboard!');
     } catch (err) {
-      console.error('Failed to copy:', err);
+      // Fallback method for iOS/Safari and non-HTTPS contexts
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.top = '-9999px';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          alert('Link copied to clipboard!');
+        } else {
+          alert('Failed to copy link. Please try again.');
+        }
+      } catch (fallbackErr) {
+        console.error('Failed to copy:', fallbackErr);
+        alert('Unable to copy. Link: ' + text);
+      }
     }
   };
 
@@ -134,7 +140,7 @@ export default function BookDetailsView({ book, onClose, onAddToFavourites }) {
           }}
           onClick={handleShareCopy}
         >
-          Share / Copy Link
+          Copy Link
         </button>
       </div>
     </div>
