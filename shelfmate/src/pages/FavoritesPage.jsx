@@ -122,8 +122,12 @@ export default function FavoritesPage() {
       e.stopPropagation();
     }
     
-    // Ensure bookId is just a number, not an object or event
-    const id = typeof bookId === 'object' ? bookId.id : bookId;
+    // Safety check: ensure bookId is a number, not an event or object
+    const id = typeof bookId === 'number' ? bookId : (bookId?.id || null);
+    if (id === null || typeof id !== 'number') {
+      console.error('Invalid bookId passed to toggleCollectionEditorSelection:', bookId);
+      return;
+    }
     
     setCollectionEditorSelectedIds((prev) => {
       const next = new Set(prev);
@@ -193,8 +197,16 @@ export default function FavoritesPage() {
     const existingRaw = localStorage.getItem(COLLECTIONS_KEY);
     const existing = existingRaw ? JSON.parse(existingRaw) : [];
 
-    const bookIdsArray = Array.from(collectionEditorSelectedIds);
-    
+    // Convert Set to Array and filter to ensure only numbers
+    const bookIdsArray = Array.from(collectionEditorSelectedIds).filter(
+      id => typeof id === 'number'
+    );
+
+    if (bookIdsArray.length === 0) {
+      alert("Error: Invalid book IDs selected. Please try again.");
+      return;
+    }
+
     const newCollection = {
       id: Date.now(),
       name: collectionEditorName.trim(),
