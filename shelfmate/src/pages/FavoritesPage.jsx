@@ -93,15 +93,17 @@ export default function FavoritesPage() {
     setIsCollectionEditorOpen(true);
     setCollectionEditorName("");
     setCollectionEditorSearchTerm("");
-    setCollectionEditorSelectedIds(preSelectedBookId ? new Set([preSelectedBookId]) : new Set());
+    const initialSelection = preSelectedBookId ? new Set([preSelectedBookId]) : new Set();
+    setCollectionEditorSelectedIds(initialSelection);
     setCollectionMode("new");
     setSelectedCollectionId("");
   };
 
   const handleAddToCollection = () => {
-    if (selectedBook) {
+    if (selectedBook && selectedBook.id) {
+      const bookId = selectedBook.id; // Extract just the ID
       setSelectedBook(null);
-      openCollectionEditor(selectedBook.id);
+      openCollectionEditor(bookId);
     }
   };
 
@@ -142,11 +144,13 @@ export default function FavoritesPage() {
       const existingRaw = localStorage.getItem(COLLECTIONS_KEY);
       const existing = existingRaw ? JSON.parse(existingRaw) : [];
 
+      const bookIdsToAdd = Array.from(collectionEditorSelectedIds);
+      
       const updatedCollections = existing.map((collection) => {
         if (collection.id === parseInt(selectedCollectionId, 10)) {
           // Merge new book IDs with existing ones (avoid duplicates)
           const mergedBookIds = Array.from(
-            new Set([...collection.bookIds, ...Array.from(collectionEditorSelectedIds)])
+            new Set([...collection.bookIds, ...bookIdsToAdd])
           );
           return { ...collection, bookIds: mergedBookIds };
         }
@@ -176,10 +180,12 @@ export default function FavoritesPage() {
     const existingRaw = localStorage.getItem(COLLECTIONS_KEY);
     const existing = existingRaw ? JSON.parse(existingRaw) : [];
 
+    const bookIdsArray = Array.from(collectionEditorSelectedIds);
+    
     const newCollection = {
       id: Date.now(),
       name: collectionEditorName.trim(),
-      bookIds: Array.from(collectionEditorSelectedIds),
+      bookIds: bookIdsArray,
       createdAt: new Date().toISOString(),
     };
 
