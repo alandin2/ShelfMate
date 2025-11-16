@@ -3,6 +3,9 @@
 
 ShelfMate is a dating app for books, swipe left on books you like and right for those you don't. Your favorites will be saved with the feature to create collections to organize the books you like. Find books that match your interests, favorite them, and even buy them on Amazon, straight from the app.
 
+**Project Demo Video**
+https://www.youtube.com/watch?v=lpUlrQSSMZA
+
 ## Setting Up
 
 ### Prerequisites: 
