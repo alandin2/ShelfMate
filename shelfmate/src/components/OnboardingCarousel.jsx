@@ -61,12 +61,12 @@ export default function OnboardingCarousel({ onFinish, slideCount = 4, slideTitl
 
   return (
     <div className="flex-1 flex flex-col items-center justify-between p-0 w-full h-full">
-      <div className="w-full flex-1 bg-white rounded-lg flex flex-col items-center justify-center shadow-sm overflow-hidden relative">
+      <div className="w-full flex-1 bg-white rounded-lg flex flex-col items-center justify-center shadow-sm relative" style={{ paddingBottom: '0.25rem' }}>
         {/* Slide title */}
         <div className="w-full px-4 pt-4 text-center">
           <h3 className="text-lg font-semibold" style={{ color: '#703923' }}>{title}</h3>
         </div>
-        <div className="flex items-center justify-center w-full h-full">
+            <div className="flex items-center justify-center w-full px-4" style={{ paddingBottom: '0.5rem' }}>
           {current ? (
             <video
               ref={videoRef}
@@ -77,7 +77,7 @@ export default function OnboardingCarousel({ onFinish, slideCount = 4, slideTitl
               playsInline
               onTimeUpdate={handleTimeUpdate}
               onLoadedMetadata={handleTimeUpdate}
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  style={{ width: '100%', height: 'auto', maxHeight: '68vh', objectFit: 'contain' }}
             />
           ) : (
             <div className="text-center px-4 text-black">
@@ -86,13 +86,15 @@ export default function OnboardingCarousel({ onFinish, slideCount = 4, slideTitl
           )}
         </div>
 
-  {/* progress bar */}
-        <div className="absolute left-0 right-0 bottom-0 h-2 bg-black/30">
-          <div className="h-full bg-[#703923] transition-[width]" style={{ width: `${progress * 100}%` }} />
-        </div>
-
         {/* preload next video hidden */}
         {preloadSrc && <video src={preloadSrc} preload="auto" style={{ display: 'none' }} />}
+      </div>
+
+      {/* progress bar (rendered below the video so it doesn't overlap/cut off the bottom) */}
+      <div className="w-full max-w-full px-2 mt-3">
+        <div className="h-2 bg-black/10 rounded overflow-hidden">
+          <div className="h-full bg-[#703923] transition-[width]" style={{ width: `${progress * 100}%` }} />
+        </div>
       </div>
 
       {/* Controls */}
