@@ -13,6 +13,16 @@ import lordCover from "../assets/lord-of-the-rings.jpg";
 import wutheringCover from "../assets/wuthering-heights.jpg";
 import middleCover from "../assets/middle-march.jpg";
 import gatsbyCover from "../assets/gatsby.jpg";
+import warCover from "../assets/war-and-peace.jpg";
+import animalFarmCover from "../assets/animal-farm.jpg";
+import chroniclesCover from "../assets/chronicles-of-narnia.jpg";
+import emmaCover from "../assets/emma.jpg";
+import brothersKaramazovCover from "../assets/brothers-karamazov.jpg";
+import senseCover from "../assets/sense-sensibility.jpg";
+import silmarillionCover from "../assets/silmarillion.jpg";
+import tenderCover from "../assets/tender-is-the-night.jpg";
+import frannyZooeyCover from "../assets/franny-and-zooey.jpg";
+import islandCover from "../assets/island.jpg";   
 
 export const SAMPLE_BOOKS = [
   {
@@ -200,7 +210,7 @@ export const SAMPLE_BOOKS = [
     title: "War and Peace",
     author: "Leo Tolstoy",
     genre: "Classics",
-    cover: annaCover,
+    cover: warCover,
     summary: "An epic tale of five families navigating love and war in Napoleonic Russia.",
     published: 1869,
     language: "Russian",
@@ -212,7 +222,7 @@ export const SAMPLE_BOOKS = [
     title: "Animal Farm",
     author: "George Orwell",
     genre: "Fiction",
-    cover: orwellCover,
+    cover: animalFarmCover,
     summary: "A satirical allegory of totalitarianism and corrupted ideals.",
     published: 1945,
     language: "English",
@@ -224,7 +234,7 @@ export const SAMPLE_BOOKS = [
     title: "The Chronicles of Narnia",
     author: "C.S. Lewis",
     genre: "Fantasy",
-    cover: lordCover,
+    cover: chroniclesCover,
     summary: "Magical adventures in a wondrous world beyond the wardrobe.",
     published: 1950,
     language: "English",
@@ -236,7 +246,7 @@ export const SAMPLE_BOOKS = [
     title: "Emma",
     author: "Jane Austen",
     genre: "Romance",
-    cover: prideCover,
+    cover: emmaCover,
     summary: "A matchmaker learns valuable lessons about love and friendship.",
     published: 1815,
     language: "English",
@@ -248,7 +258,7 @@ export const SAMPLE_BOOKS = [
     title: "The Brothers Karamazov",
     author: "Fyodor Dostoevsky",
     genre: "Classics",
-    cover: crimeCover,
+    cover: brothersKaramazovCover,
     summary: "A profound exploration of faith, doubt, and family dynamics.",
     published: 1880,
     language: "Russian",
@@ -260,7 +270,7 @@ export const SAMPLE_BOOKS = [
     title: "Sense and Sensibility",
     author: "Jane Austen",
     genre: "Romance",
-    cover: janeCover,
+    cover: senseCover,
     summary: "Two sisters navigate love, heartbreak, and societal expectations.",
     published: 1811,
     language: "English",
@@ -272,7 +282,7 @@ export const SAMPLE_BOOKS = [
     title: "The Silmarillion",
     author: "J.R.R. Tolkien",
     genre: "Fantasy",
-    cover: hobbitCover,
+    cover: silmarillionCover,
     summary: "The mythological foundation of Middle-earth and its ancient histories.",
     published: 1977,
     language: "English",
@@ -284,7 +294,7 @@ export const SAMPLE_BOOKS = [
     title: "Tender Is the Night",
     author: "F. Scott Fitzgerald",
     genre: "Classics",
-    cover: gatsbyCover,
+    cover: tenderCover,
     summary: "A tragic romance set against the glamour of the French Riviera.",
     published: 1934,
     language: "English",
@@ -296,7 +306,7 @@ export const SAMPLE_BOOKS = [
     title: "Franny and Zooey",
     author: "J.D. Salinger",
     genre: "Fiction",
-    cover: catcherRyeCover,
+    cover: frannyZooeyCover,
     summary: "Two siblings grapple with spiritual crisis and family bonds.",
     published: 1961,
     language: "English",
@@ -308,7 +318,7 @@ export const SAMPLE_BOOKS = [
     title: "Island",
     author: "Aldous Huxley",
     genre: "Fiction",
-    cover: braveNewCover,
+    cover: islandCover,
     summary: "A utopian vision exploring enlightenment and human potential.",
     published: 1962,
     language: "English",
