@@ -62,6 +62,14 @@ export default function OnboardingCarousel({ onFinish, slideCount = 4, slideTitl
   return (
     <div className="flex-1 flex flex-col items-center justify-between p-0 w-full h-full">
       <div className="w-full flex-1 bg-white rounded-lg flex flex-col items-center justify-center shadow-sm relative" style={{ paddingBottom: '0.25rem' }}>
+        <div className="absolute top-3 right-3">
+          <button
+            onClick={() => { if (onFinish) onFinish(); }}
+            className="text-sm text-gray-600 px-3 py-1 rounded-md hover:bg-gray-100"
+          >
+            Skip
+          </button>
+        </div>
         {/* Slide title */}
         <div className="w-full px-4 pt-4 text-center">
           <h3 className="text-lg font-semibold" style={{ color: '#703923' }}>{title}</h3>
