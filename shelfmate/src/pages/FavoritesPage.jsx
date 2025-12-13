@@ -632,35 +632,9 @@ export default function FavoritesPage() {
 
                 <div className="border rounded-md max-h-52 overflow-y-auto">
                   {filteredFavoritesForEditor.length === 0 ? (
-                    // If user has no favorites at all, show a friendlier call-to-action
-                    favorites.length === 0 ? (
-                      <div className="text-center p-4">
-                        <p className="text-sm text-gray-600">No favorites found. Start adding books you love.</p>
-                        <p className="text-sm text-gray-600 mt-2"></p>
-                        <div className="mt-3 flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => {
-                              // Close the collection pop-up and open book search so users can add favorites
-                              closeCollectionEditor();
-                              openSearch();
-                            }}
-                            className="px-3 py-1 rounded-md text-white"
-                            style={{ backgroundColor: "#703923" }}
-                          >
-                            Search books
-                          </button>
-                          <button
-                            onClick={closeCollectionEditor}
-                            className="px-3 py-1 rounded-md border"
-                            style={{ borderColor: "#703923", color: "#703923" }}
-                          >
-                            Close
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500 p-3">No favorites match this search.</p>
-                    )
+                    <p className="text-sm text-gray-500 p-3">
+                      No favorites match this search.
+                    </p>
                   ) : (
                     filteredFavoritesForEditor.map((book) => {
                       const checked = collectionEditorSelectedIds.has(book.id);
