@@ -57,7 +57,7 @@ export default function App() {
       {/* Main Content */}
       {currentView === 'home' && <HomePage />}
       {currentView === 'favorites' && <FavoritesPage />}
-      {currentView === 'discover' && <DiscoveryPage />}
+      {currentView === 'discover' && <DiscoveryPage onNavigate={setCurrentView} />}
       {currentView === 'profile' && <ProfilePage />}
 
       {/* Bottom Navigation */}
