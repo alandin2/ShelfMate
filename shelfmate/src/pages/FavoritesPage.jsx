@@ -678,7 +678,8 @@ export default function FavoritesPage() {
                               type="checkbox"
                               readOnly
                               checked={checked}
-                              className="h-4 w-4"
+                              className="h-4 w-4 pointer-events-none"
+                              style={{ accentColor: "#2563eb" }}
                             />
                             <div className="flex flex-col">
                               <span className="text-sm font-medium">
