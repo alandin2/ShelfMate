@@ -28,6 +28,23 @@ export default function FavoritesPage() {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // toast state for friendly collection msgs (to replace harsh alert() msg)
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    type: "success", // "success" | "error" | "info"
+  });
+
+  const showToast = (message, type = "success") => {
+    setToast({ open: true, message, type });
+
+    // auto-dismiss
+    window.clearTimeout(showToast._t);
+    showToast._t = window.setTimeout(() => {
+      setToast((t) => ({ ...t, open: false }));
+    }, 2200);
+  };
+
   // load favorites n collections
   useEffect(() => {
     const loadFavorites = () => {
@@ -66,9 +83,7 @@ export default function FavoritesPage() {
   }, []);
 
   // favorite n pop-up handling
-
   const handleBookClick = (book) => setSelectedBook(book);
-
   const handleCloseBookPopup = () => setSelectedBook(null);
 
   const handleRemoveFromFavorites = (book, e) => {
@@ -88,7 +103,6 @@ export default function FavoritesPage() {
   };
 
   // collection logic
-
   const openCollectionEditor = (preSelectedBookId = null) => {
     setIsCollectionEditorOpen(true);
     setCollectionEditorName("");
@@ -136,16 +150,13 @@ export default function FavoritesPage() {
 
     setCollectionEditorSelectedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
 
-  // create a new collection OR add to an existing one
+  // create a new collection OR add to existing one
   const handleCreateCollection = (e) => {
     if (e) {
       e.preventDefault();
@@ -155,11 +166,11 @@ export default function FavoritesPage() {
     // Add to existing collection
     if (collectionMode === "existing") {
       if (!selectedCollectionId) {
-        alert("Please select a collection.");
+        showToast("Please select a collection.", "error");
         return;
       }
       if (collectionEditorSelectedIds.size === 0) {
-        alert("Please select at least one book.");
+        showToast("Please select at least one book.", "error");
         return;
       }
 
@@ -170,7 +181,7 @@ export default function FavoritesPage() {
       const updatedCollections = existing.map((collection) => {
         if (collection.id === parseInt(selectedCollectionId, 10)) {
           const mergedBookIds = Array.from(
-            new Set([...collection.bookIds, ...bookIdsToAdd])
+            new Set([...(collection.bookIds || []), ...bookIdsToAdd])
           );
           return { ...collection, bookIds: mergedBookIds };
         }
@@ -182,17 +193,19 @@ export default function FavoritesPage() {
       window.dispatchEvent(new CustomEvent("collections-updated"));
 
       closeCollectionEditor();
-      alert("Books added to collection! 🎉");
+
+      showToast("Books added to collection! 🎉", "success");
       return;
     }
 
-    // Create new collection
+    // create new collection
     if (!collectionEditorName.trim()) {
-      alert("Please enter a name for your collection.");
+      showToast("Please enter a name for your collection.", "error");
       return;
     }
     if (collectionEditorSelectedIds.size === 0) {
-      alert("Please select at least one book.");
+      //if lless than 1 selection per collection
+      showToast("Please select at least one book.", "error");
       return;
     }
 
@@ -203,7 +216,7 @@ export default function FavoritesPage() {
       (id) => typeof id === "number"
     );
     if (bookIdsArray.length === 0) {
-      alert("Error: Invalid book IDs selected. Please try again.");
+      showToast("Error: Invalid book IDs selected. Please try again.", "error");
       return;
     }
 
@@ -220,7 +233,9 @@ export default function FavoritesPage() {
     window.dispatchEvent(new CustomEvent("collections-updated"));
 
     closeCollectionEditor();
-    alert("Collection created! 🎉");
+
+    // collection created msg
+    showToast("Collection created! 🎉", "success");
   };
 
   // delete a whole collection
@@ -231,12 +246,16 @@ export default function FavoritesPage() {
       const updatedCollections = collections.filter(
         (c) => c.id !== collectionId
       );
+
       localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(updatedCollections));
       setCollections(updatedCollections);
       window.dispatchEvent(new CustomEvent("collections-updated"));
+
       if (openCollectionId === collectionId) {
         setOpenCollectionId(null);
       }
+
+      showToast("Collection deleted successfully.", "success");
     }
   };
 
@@ -248,7 +267,7 @@ export default function FavoritesPage() {
       if (collection.id === collectionId) {
         return {
           ...collection,
-          bookIds: collection.bookIds.filter((id) => id !== bookId),
+          bookIds: (collection.bookIds || []).filter((id) => id !== bookId),
         };
       }
       return collection;
@@ -259,7 +278,7 @@ export default function FavoritesPage() {
     window.dispatchEvent(new CustomEvent("collections-updated"));
   };
 
-  //favorites filtered inside the collection editor search
+  // favorites filtered inside the collection editor search
   const filteredFavoritesForEditor = favorites.filter((book) => {
     if (!collectionEditorSearchTerm.trim()) return true;
     const q = collectionEditorSearchTerm.toLowerCase();
@@ -269,8 +288,7 @@ export default function FavoritesPage() {
     );
   });
 
-  // search feature functionalitye
-
+  // search feature
   const openSearch = () => {
     setIsSearchVisible(true);
     setSearchQuery("");
@@ -386,8 +404,7 @@ export default function FavoritesPage() {
                             {collection.name}
                           </span>
                           <span className="text-xs text-gray-500">
-                            {books.length} book
-                            {books.length !== 1 && "s"}
+                            {books.length} book{books.length !== 1 && "s"}
                           </span>
                         </div>
                         <span className="text-lg">
@@ -782,6 +799,44 @@ export default function FavoritesPage() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast UI (for collections added msg) */}
+      {toast.open && (
+        <div
+          className="fixed left-1/2 -translate-x-1/2 z-[60] px-4 py-3 rounded-xl shadow-lg border"
+          style={{
+            bottom: "90px", // msg sits above bottom nav
+            backgroundColor: "white",
+            borderColor: toast.type === "error" ? "#ef4444" : "#703923",
+            color: "#111827",
+            width: "min(92vw, 420px)",
+          }}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-2">
+              <span
+                style={{
+                  color: toast.type === "error" ? "#ef4444" : "#703923",
+                }}
+              >
+                {toast.type === "error" ? "⚠️" : "✅"}
+              </span>
+              <p className="text-sm">{toast.message}</p>
+            </div>
+
+            <button
+              onClick={() => setToast((t) => ({ ...t, open: false }))}
+              className="text-sm px-2 py-1 rounded-md"
+              style={{ color: "#703923" }}
+              aria-label="Dismiss message"
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}
